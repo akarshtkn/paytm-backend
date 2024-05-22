@@ -10,13 +10,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SignupResponse {
+
     private String message;
 
     private String jwt;
-
-    private String username;
-
-    private String firstName;
-
-    private String lastName;
 }

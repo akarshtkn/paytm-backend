@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface PaytmUserRepo extends JpaRepository<PaytmUser, Integer> {
+
     @Query(value = "SELECT * FROM paytm_user WHERE username=:username", nativeQuery = true)
     Optional<PaytmUser> findByUsername(String username);
 }
