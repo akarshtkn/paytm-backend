@@ -21,7 +21,4 @@ public class PaytmUserAccount {
     @Column(name = "account_balance")
     private Integer accountBalance;
 
-    @OneToOne(mappedBy = "paytmUserAccount")
-    private PaytmUser paytmUser;
-
 }

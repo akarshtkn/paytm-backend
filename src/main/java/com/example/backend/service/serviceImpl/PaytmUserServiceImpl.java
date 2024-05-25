@@ -4,6 +4,7 @@ import com.example.backend.dto.paytmUser.SigninRequest;
 import com.example.backend.dto.paytmUser.SignupRequest;
 import com.example.backend.dto.paytmUser.UserDetailsUpdateRequest;
 import com.example.backend.entity.PaytmUser;
+import com.example.backend.entity.PaytmUserAccount;
 import com.example.backend.jwt.service.JwtService;
 import com.example.backend.repository.PaytmUserRepository;
 import com.example.backend.service.PaytmUserAccountService;
@@ -25,15 +26,16 @@ public class PaytmUserServiceImpl implements PaytmUserService {
 
     private final PaytmUserRepository repository;
     private final JwtService jwtService;
-    private final PaytmUserAccountService accountService;
 
     @Override
     public String userSignup(SignupRequest request) throws IllegalArgumentException {
         validateUsernameAlreadyExist(request.getUsername());
         PaytmUser user = new PaytmUser(request.getUsername(), passwordEncoder.encode(request.getPassword()),
                 request.getFirstName(), request.getLastName());
-        PaytmUser createdUser = repository.save(user);
-        accountService.setInitialBalance(createdUser);
+        PaytmUserAccount account = new PaytmUserAccount();
+        account.setAccountBalance((int) (1 + Math.random() * 10000));
+        user.setAccount(account);
+        repository.save(user);
         return jwtService.generateToken(user);
     }
 
@@ -45,7 +47,7 @@ public class PaytmUserServiceImpl implements PaytmUserService {
                         request.getPassword()
                 )
         );
-        PaytmUser user = validateUser(request.getUsername());
+        PaytmUser user = validateUserByUsername(request.getUsername());
         return jwtService.generateToken(user);
     }
 
@@ -75,7 +77,18 @@ public class PaytmUserServiceImpl implements PaytmUserService {
         repository.save(user);
     }
 
-    private PaytmUser validateUser(String username) {
+    @Override
+    public PaytmUser findUserById(Integer userId) {
+        return repository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("user with id " + userId + " not found"));
+    }
+
+    @Override
+    public void saveTransaction(List<PaytmUser> users) {
+        repository.saveAll(users);
+    }
+
+    private PaytmUser validateUserByUsername(String username) {
         return repository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("user with username " + username + " not found"));
     }

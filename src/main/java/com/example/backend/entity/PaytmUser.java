@@ -33,6 +33,10 @@ public class PaytmUser implements UserDetails {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "account_id", referencedColumnName = "account_id")
+    private PaytmUserAccount account;
+
     public PaytmUser(String username, String password, String firstName, String lastName) {
         this.username = username;
         this.password = password;

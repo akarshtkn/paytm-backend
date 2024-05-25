@@ -18,4 +18,8 @@ public interface PaytmUserService {
     List<PaytmUser> getUserByFilter(String filter);
 
     void updateUserDetails(Integer userId, UserDetailsUpdateRequest request);
+
+    PaytmUser findUserById(Integer userId);
+
+    void saveTransaction(List<PaytmUser> users);
 }

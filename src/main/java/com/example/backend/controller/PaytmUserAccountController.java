@@ -1,13 +1,11 @@
 package com.example.backend.controller;
 
+import com.example.backend.dto.paytmUser.TransferAmountRequest;
 import com.example.backend.service.PaytmUserAccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,5 +19,11 @@ public class PaytmUserAccountController {
         return new ResponseEntity<>(
                 accountService.getAccountBalance(userId), HttpStatus.OK
         );
+    }
+
+    @PostMapping("/transfer")
+    public ResponseEntity<String> transferAmount(@RequestBody TransferAmountRequest request) {
+        accountService.transferAmount(request.getFromUserId(), request.getToUserId(), request.getAmount());
+        return new ResponseEntity<>("Transfer successful", HttpStatus.OK);
     }
 }
