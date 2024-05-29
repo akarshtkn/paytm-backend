@@ -28,27 +28,25 @@ public class PaytmUserServiceImpl implements PaytmUserService {
     private final JwtService jwtService;
 
     @Override
-    public String userSignup(SignupRequest request) throws IllegalArgumentException {
+    public PaytmUser userSignup(SignupRequest request) throws IllegalArgumentException {
         validateUsernameAlreadyExist(request.getUsername());
         PaytmUser user = new PaytmUser(request.getUsername(), passwordEncoder.encode(request.getPassword()),
                 request.getFirstName(), request.getLastName());
         PaytmUserAccount account = new PaytmUserAccount();
         account.setAccountBalance((int) (1 + Math.random() * 10000));
         user.setAccount(account);
-        repository.save(user);
-        return jwtService.generateToken(user);
+        return repository.save(user);
     }
 
     @Override
-    public String userSignin(SigninRequest request) {
+    public PaytmUser userSignin(SigninRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
                         request.getPassword()
                 )
         );
-        PaytmUser user = validateUserByUsername(request.getUsername());
-        return jwtService.generateToken(user);
+        return validateUserByUsername(request.getUsername());
     }
 
     @Override

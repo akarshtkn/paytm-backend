@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SignupResponse {
 
-    private String message;
+    private UserDetailsResponse user;
 
     private String jwt;
 }
